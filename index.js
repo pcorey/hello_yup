@@ -4,17 +4,25 @@ const _ = require("lodash");
 var schema = yup.object().shape({
   name: yup.string().required(),
   age: yup
-    .number()
+    .number("Must be a number.")
+    .required("Age is required")
+    .positive("Must be positive")
+    .integer("Must be an integer."),
+  test: yup
+    .object()
     .required()
-    .positive()
-    .integer(),
-  test: yup.object().shape({
-    baz: yup.number().required("Baz is required.")
-  })
+    .shape({
+      baz: yup.number().required("Baz is required.")
+    })
 });
 
 schema
-  .validate({ foo: "bar" }, { abortEarly: false })
+  .validate(
+    { foo: "bar", test: {}, age: "10" },
+    {
+      abortEarly: false
+    }
+  )
   .then(res => console.log("res", res))
   .catch(err =>
     console.log(
